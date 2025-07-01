@@ -1,0 +1,94 @@
+type Principal = principal;
+
+type UserProfile = record {
+  id: Principal;
+  username: text;
+  name: text;
+  bio: text;
+  profile_photo: opt blob;
+  cover_photo: opt blob;
+  followers_count: nat32;
+  following_count: nat32;
+  posts_count: nat32;
+  created_at: int;
+};
+
+type Post = record {
+  id: text;
+  author: Principal;
+  content: text;
+  media: opt blob;
+  media_type: opt text;
+  likes_count: nat32;
+  comments_count: nat32;
+  shares_count: nat32;
+  created_at: int;
+  updated_at: int;
+};
+
+type Comment = record {
+  id: text;
+  post_id: text;
+  author: Principal;
+  content: text;
+  likes_count: nat32;
+  created_at: int;
+};
+
+type CreatePostRequest = record {
+  content: text;
+  media: opt blob;
+  media_type: opt text;
+};
+
+type UpdateProfileRequest = record {
+  username: opt text;
+  name: opt text;
+  bio: opt text;
+  profile_photo: opt blob;
+  cover_photo: opt blob;
+};
+
+type CreateCommentRequest = record {
+  post_id: text;
+  content: text;
+};
+
+service : {
+  // Authentication
+  get_current_user: () -> (opt UserProfile) query;
+  
+  // Profile Management
+  create_profile: (UpdateProfileRequest) -> (UserProfile);
+  update_profile: (UpdateProfileRequest) -> (UserProfile);
+  get_profile: (Principal) -> (opt UserProfile) query;
+  search_users: (text) -> (vec UserProfile) query;
+  get_all_users: () -> (vec UserProfile) query;
+  
+  // Follow System
+  follow_user: (Principal) -> (bool);
+  unfollow_user: (Principal) -> (bool);
+  is_following: (Principal) -> (bool) query;
+  get_followers: (Principal) -> (vec Principal) query;
+  get_following: (Principal) -> (vec Principal) query;
+  
+  // Posts
+  create_post: (CreatePostRequest) -> (Post);
+  get_post: (text) -> (opt Post) query;
+  get_user_posts: (Principal) -> (vec Post) query;
+  get_feed: () -> (vec Post) query;
+  delete_post: (text) -> (bool);
+  
+  // Post Interactions
+  like_post: (text) -> (bool);
+  unlike_post: (text) -> (bool);
+  is_post_liked: (text) -> (bool) query;
+  share_post: (text) -> (Post);
+  
+  // Comments
+  create_comment: (CreateCommentRequest) -> (Comment);
+  get_post_comments: (text) -> (vec Comment) query;
+  like_comment: (text) -> (bool);
+  unlike_comment: (text) -> (bool);
+  delete_comment: (text) -> (bool);
+}

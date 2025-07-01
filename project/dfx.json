@@ -1,0 +1,29 @@
+{
+  "canisters": {
+    "social_backend": {
+      "type": "rust",
+      "package": "social_backend",
+      "candid": "src/social_backend/social_backend.did"
+    },
+    "social_frontend": {
+      "dependencies": [
+        "social_backend"
+      ],
+      "frontend": {
+        "entrypoint": "dist/index.html"
+      },
+      "source": [
+        "dist/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
